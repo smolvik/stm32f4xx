@@ -16,6 +16,7 @@ SECTIONS
 	.text :
 	{
 		. = ALIGN(4);
+		KEEP(*(.main_sec))		
 		*(.text)
 	} > RAM
 

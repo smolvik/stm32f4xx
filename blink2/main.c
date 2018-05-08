@@ -4,24 +4,24 @@
  * 
  *********************************************************************/
 #include "stm32f4xx.h"
+
 #define LED_PIN 9
 
-volatile int counter;
+extern void sleep(uint32_t ms);
+extern void port_config();
+extern void clock_config();
+extern void set_ram_vt();
 
+__attribute__ ((section(".main_sec")))
 int main()
 {
-	counter = 0;
-	
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;		// enable clock for portB
-	
-	// configure portB
-	GPIOB->MODER |= 1<<(LED_PIN*2);				// PB9 - push-pull output
-	GPIOB->OSPEEDR |= 3<<(LED_PIN*2);			// PB9 - max speed
+	set_ram_vt();
+	clock_config();
+	port_config();
 	
 	while(1)
 	{										
-		while(100000 != ++counter){};
-		counter = 0;
+		sleep(1000);
 		GPIOB->ODR ^= (1<<LED_PIN);
 	}
 }

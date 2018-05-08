@@ -21,10 +21,13 @@ LFLAGS += -Map=test.map
  
 all: blink.elf
 
-main.o: main.c
+system.o: system.c
 	$(CC) $(CFLAGS) -O0 -o $@ $<
+	
+main.o: main.c
+	$(CC) $(CFLAGS) -O0 -o $@ $<	
 
-blink.elf: main.o 
+blink.elf: main.o system.o 
 	$(LD) $(LFLAGS) -o $@ $^ $(LIBS)
 
 clean:
