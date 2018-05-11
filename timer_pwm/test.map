@@ -1,0 +1,133 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAM              0x20000000         0x00020000         xrw
+FLASH            0x08000000         0x00100000         xr
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+
+.text           0x20000000      0x404
+                0x20000000                . = ALIGN (0x4)
+ *(.main_sec)
+ .main_sec      0x20000000       0x1c main.o
+                0x20000000                main
+ *(.text)
+ .text          0x2000001c        0x0 main.o
+ .text          0x2000001c      0x3e8 system.o
+                0x200000e4                SysTick_Handler_RAM
+                0x20000100                TIM4_Handler_RAM
+                0x2000015c                set_ram_vt
+                0x200001c8                sleep
+                0x200001f8                port_config
+                0x2000023c                clock_config
+                0x20000344                timer_config
+                0x200003e4                dds_config
+ .text          0x20000404        0x0 cos_tb.o
+
+.glue_7         0x20000404        0x0
+ .glue_7        0x20000404        0x0 linker stubs
+
+.glue_7t        0x20000404        0x0
+ .glue_7t       0x20000404        0x0 linker stubs
+
+.vfp11_veneer   0x20000404        0x0
+ .vfp11_veneer  0x20000404        0x0 linker stubs
+
+.v4_bx          0x20000404        0x0
+ .v4_bx         0x20000404        0x0 linker stubs
+
+.iplt           0x20000404        0x0
+ .iplt          0x20000404        0x0 main.o
+
+.rel.dyn        0x20000404        0x0
+ .rel.iplt      0x20000404        0x0 main.o
+
+.data           0x20000404      0x800
+                0x20000404                . = ALIGN (0x4)
+ *(.data)
+ .data          0x20000404        0x0 main.o
+ .data          0x20000404        0x0 system.o
+ .data          0x20000404      0x800 cos_tb.o
+                0x20000404                cos_tb
+
+.igot.plt       0x20000c04        0x0
+ .igot.plt      0x20000c04        0x0 main.o
+
+.bss            0x20000d00      0x28c
+                0x20000d00                . = ALIGN (0x4)
+ *(.bss)
+ .bss           0x20000d00        0x0 main.o
+ .bss           0x20000d00      0x28c system.o
+                0x20000d00                phase
+                0x20000d02                freq
+                0x20000e00                table_interrupt_vector_RAM
+                0x20000f88                system_time
+ .bss           0x20000f8c        0x0 cos_tb.o
+                0x00000400                _stack_size = 0x400
+                0x20020000                _stack_end = (ORIGIN (RAM) + LENGTH (RAM))
+                0x2001fc00                _stack_begin = (_stack_end - _stack_size)
+                0x2001fc00                . = _stack_begin
+
+._stack         0x20000f8c      0x400
+                0x2000138c                . = (. + _stack_size)
+ *fill*         0x20000f8c      0x400 
+LOAD main.o
+LOAD system.o
+LOAD cos_tb.o
+OUTPUT(blink.elf elf32-littlearm)
+
+.debug_info     0x00000000      0xe6e
+ .debug_info    0x00000000       0xc1 main.o
+ .debug_info    0x000000c1      0xd15 system.o
+ .debug_info    0x00000dd6       0x98 cos_tb.o
+
+.debug_abbrev   0x00000000      0x308
+ .debug_abbrev  0x00000000       0x87 main.o
+ .debug_abbrev  0x00000087      0x22b system.o
+ .debug_abbrev  0x000002b2       0x56 cos_tb.o
+
+.debug_aranges  0x00000000       0x58
+ .debug_aranges
+                0x00000000       0x20 main.o
+ .debug_aranges
+                0x00000020       0x20 system.o
+ .debug_aranges
+                0x00000040       0x18 cos_tb.o
+
+.debug_ranges   0x00000000       0x10
+ .debug_ranges  0x00000000       0x10 main.o
+
+.debug_line     0x00000000      0x30f
+ .debug_line    0x00000000       0xdf main.o
+ .debug_line    0x000000df      0x1a8 system.o
+ .debug_line    0x00000287       0x88 cos_tb.o
+
+.debug_str      0x00000000      0xa00
+ .debug_str     0x00000000      0x130 main.o
+                                0x16c (size before relaxing)
+ .debug_str     0x00000130      0x8c7 system.o
+                                0xa3e (size before relaxing)
+ .debug_str     0x000009f7        0x9 cos_tb.o
+                                0x15d (size before relaxing)
+
+.comment        0x00000000       0x6e
+ .comment       0x00000000       0x6e main.o
+                                 0x6f (size before relaxing)
+ .comment       0x0000006e       0x6f system.o
+ .comment       0x0000006e       0x6f cos_tb.o
+
+.ARM.attributes
+                0x00000000       0x33
+ .ARM.attributes
+                0x00000000       0x33 main.o
+ .ARM.attributes
+                0x00000033       0x33 system.o
+ .ARM.attributes
+                0x00000066       0x33 cos_tb.o
+
+.debug_frame    0x00000000      0x1b8
+ .debug_frame   0x00000000       0x2c main.o
+ .debug_frame   0x0000002c      0x18c system.o
