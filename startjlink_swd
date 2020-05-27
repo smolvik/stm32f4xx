@@ -1,0 +1,6 @@
+#!/bin/bash
+
+OPT="-USB -device STM32F407VE -endian little -if SWD -speed 4000 -noir -noLocalhostOnly"
+
+/opt/SEGGER/JLink/JLinkGDBServer  $OPT
+

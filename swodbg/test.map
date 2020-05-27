@@ -1,0 +1,193 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAM              0x20000000         0x00020000         xrw
+FLASH            0x08000000         0x00100000         xr
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+
+.text           0x20000000      0xdef
+                0x20000000                . = ALIGN (0x4)
+ *(.startup_sec)
+ .startup_sec   0x20000000       0x34 startup.o
+                0x20000000                startup
+ *(.text)
+ .text          0x20000034       0x8c main.o
+                0x20000080                main
+ .text          0x200000c0      0x2c4 system.o
+                0x20000158                SysTick_Handler_RAM
+                0x20000174                set_ram_vt
+                0x200001e0                sleep
+                0x20000210                port_config
+                0x2000027c                clock_config
+ .text          0x20000384      0x76c xprintf.o
+                0x20000384                xputc
+                0x200003d4                xputs
+                0x200003fc                xfputs
+                0x20000734                xprintf
+                0x20000758                xsprintf
+                0x20000798                xfprintf
+                0x200007d4                put_dump
+                0x200008c8                xgets
+                0x20000968                xfgets
+                0x200009a0                xatoi
+ .text          0x20000af0        0x0 startup.o
+ .text          0x20000af0      0x2d8 uart.o
+                0x20000b20                USART2_Handler_RAM
+                0x20000bb8                uart_config
+                0x20000bf8                uart_putch
+                0x20000c40                uart_send
+                0x20000cbc                uart_send_str
+                0x20000d50                uart_read
+ *(.text*)
+ *(.rodata)
+ .rodata        0x20000dc8        0x8 main.o
+ .rodata        0x20000dd0       0x1f xprintf.o
+ *(.rodata*)
+
+.glue_7         0x20000df0        0x0
+ .glue_7        0x20000df0        0x0 linker stubs
+
+.glue_7t        0x20000df0        0x0
+ .glue_7t       0x20000df0        0x0 linker stubs
+
+.vfp11_veneer   0x20000df0        0x0
+ .vfp11_veneer  0x20000df0        0x0 linker stubs
+
+.v4_bx          0x20000df0        0x0
+ .v4_bx         0x20000df0        0x0 linker stubs
+
+.iplt           0x20000df0        0x0
+ .iplt          0x20000df0        0x0 main.o
+
+.rel.dyn        0x20000df0        0x0
+ .rel.iplt      0x20000df0        0x0 main.o
+
+.data           0x20000def        0x1
+                0x20000df0                . = ALIGN (0x4)
+ *fill*         0x20000def        0x1 
+ *(.data)
+ .data          0x20000df0        0x0 main.o
+ .data          0x20000df0        0x0 system.o
+ .data          0x20000df0        0x0 xprintf.o
+ .data          0x20000df0        0x0 startup.o
+ .data          0x20000df0        0x0 uart.o
+ *(.data*)
+
+.igot.plt       0x20000df0        0x0
+ .igot.plt      0x20000df0        0x0 main.o
+
+.bss            0x20000e00      0x9a8
+                0x20000e00                . = ALIGN (0x4)
+                0x20000e00                _bss_begin = .
+ *(.bss)
+ .bss           0x20000e00        0x0 main.o
+ .bss           0x20000e00      0x18c system.o
+                0x20000e00                table_interrupt_vector_RAM
+                0x20000f88                system_time
+ .bss           0x20000f8c        0xc xprintf.o
+                0x20000f8c                xfunc_out
+                0x20000f94                xfunc_in
+ .bss           0x20000f98        0x0 startup.o
+ .bss           0x20000f98      0x810 uart.o
+                0x20000f98                tx_buf
+                0x20001398                tx_idx
+                0x2000139c                tx_wr_idx
+                0x200013a0                rx_buf
+                0x200017a0                rx_idx
+                0x200017a4                rx_rd_idx
+ *(.bss*)
+                0x200017a8                _bss_end = .
+                0x00000400                _stack_size = 0x400
+                0x20020000                _stack_end = (ORIGIN (RAM) + LENGTH (RAM))
+                0x2001fc00                _stack_begin = (_stack_end - _stack_size)
+                0x2001fc00                . = _stack_begin
+
+._stack         0x200017a8      0x400
+                0x20001ba8                . = (. + _stack_size)
+ *fill*         0x200017a8      0x400 
+LOAD main.o
+LOAD system.o
+LOAD xprintf.o
+LOAD startup.o
+LOAD uart.o
+OUTPUT(blink.elf elf32-littlearm)
+
+.debug_info     0x00000000     0x1bdc
+ .debug_info    0x00000000      0x394 main.o
+ .debug_info    0x00000394      0xa81 system.o
+ .debug_info    0x00000e15      0x4c9 xprintf.o
+ .debug_info    0x000012de       0x78 startup.o
+ .debug_info    0x00001356      0x886 uart.o
+
+.debug_abbrev   0x00000000      0x73c
+ .debug_abbrev  0x00000000      0x16c main.o
+ .debug_abbrev  0x0000016c      0x21a system.o
+ .debug_abbrev  0x00000386      0x194 xprintf.o
+ .debug_abbrev  0x0000051a       0x6f startup.o
+ .debug_abbrev  0x00000589      0x1b3 uart.o
+
+.debug_aranges  0x00000000       0xa0
+ .debug_aranges
+                0x00000000       0x20 main.o
+ .debug_aranges
+                0x00000020       0x20 system.o
+ .debug_aranges
+                0x00000040       0x20 xprintf.o
+ .debug_aranges
+                0x00000060       0x20 startup.o
+ .debug_aranges
+                0x00000080       0x20 uart.o
+
+.debug_line     0x00000000      0x723
+ .debug_line    0x00000000      0x112 main.o
+ .debug_line    0x00000112      0x18e system.o
+ .debug_line    0x000002a0      0x2e5 xprintf.o
+ .debug_line    0x00000585       0x40 startup.o
+ .debug_line    0x000005c5      0x15e uart.o
+
+.debug_str      0x00000000      0xaf9
+ .debug_str     0x00000000      0x1e9 main.o
+                                0x22a (size before relaxing)
+ .debug_str     0x000001e9      0x793 system.o
+                                0x94f (size before relaxing)
+ .debug_str     0x0000097c       0x9f xprintf.o
+                                0x1bd (size before relaxing)
+ .debug_str     0x00000a1b       0x39 startup.o
+                                0x100 (size before relaxing)
+ .debug_str     0x00000a54       0xa5 uart.o
+                                0x879 (size before relaxing)
+
+.comment        0x00000000       0x6e
+ .comment       0x00000000       0x6e main.o
+                                 0x6f (size before relaxing)
+ .comment       0x0000006e       0x6f system.o
+ .comment       0x0000006e       0x6f xprintf.o
+ .comment       0x0000006e       0x6f startup.o
+ .comment       0x0000006e       0x6f uart.o
+
+.ARM.attributes
+                0x00000000       0x33
+ .ARM.attributes
+                0x00000000       0x33 main.o
+ .ARM.attributes
+                0x00000033       0x33 system.o
+ .ARM.attributes
+                0x00000066       0x33 xprintf.o
+ .ARM.attributes
+                0x00000099       0x33 startup.o
+ .ARM.attributes
+                0x000000cc       0x33 uart.o
+
+.debug_frame    0x00000000      0x48c
+ .debug_frame   0x00000000       0x58 main.o
+ .debug_frame   0x00000058      0x108 system.o
+ .debug_frame   0x00000160      0x1e4 xprintf.o
+ .debug_frame   0x00000344       0x34 startup.o
+ .debug_frame   0x00000378      0x114 uart.o
+
+.debug_ranges   0x00000000       0x10
+ .debug_ranges  0x00000000       0x10 startup.o

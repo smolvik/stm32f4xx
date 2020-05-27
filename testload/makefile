@@ -33,5 +33,8 @@ blink.elf: main.o startup.o
 clean:
 	rm -rf *.o *.elf *.bin
 
+load:
+	arm-none-eabi-gdb -ex "load blink.elf" -ex "monitor reset" -ex quit
+
 debug:
-	arm-none-eabi-gdb
+	arm-none-eabi-gdb -ex "file blink.elf"

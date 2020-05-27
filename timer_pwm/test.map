@@ -9,7 +9,7 @@ FLASH            0x08000000         0x00100000         xr
 Linker script and memory map
 
 
-.text           0x20000000      0x404
+.text           0x20000000      0xc04
                 0x20000000                . = ALIGN (0x4)
  *(.main_sec)
  .main_sec      0x20000000       0x1c main.o
@@ -26,32 +26,37 @@ Linker script and memory map
                 0x20000344                timer_config
                 0x200003e4                dds_config
  .text          0x20000404        0x0 cos_tb.o
-
-.glue_7         0x20000404        0x0
- .glue_7        0x20000404        0x0 linker stubs
-
-.glue_7t        0x20000404        0x0
- .glue_7t       0x20000404        0x0 linker stubs
-
-.vfp11_veneer   0x20000404        0x0
- .vfp11_veneer  0x20000404        0x0 linker stubs
-
-.v4_bx          0x20000404        0x0
- .v4_bx         0x20000404        0x0 linker stubs
-
-.iplt           0x20000404        0x0
- .iplt          0x20000404        0x0 main.o
-
-.rel.dyn        0x20000404        0x0
- .rel.iplt      0x20000404        0x0 main.o
-
-.data           0x20000404      0x800
-                0x20000404                . = ALIGN (0x4)
- *(.data)
- .data          0x20000404        0x0 main.o
- .data          0x20000404        0x0 system.o
- .data          0x20000404      0x800 cos_tb.o
+ *(.text*)
+ *(.rodata)
+ .rodata        0x20000404      0x800 cos_tb.o
                 0x20000404                cos_tb
+ *(.rodata*)
+
+.glue_7         0x20000c04        0x0
+ .glue_7        0x20000c04        0x0 linker stubs
+
+.glue_7t        0x20000c04        0x0
+ .glue_7t       0x20000c04        0x0 linker stubs
+
+.vfp11_veneer   0x20000c04        0x0
+ .vfp11_veneer  0x20000c04        0x0 linker stubs
+
+.v4_bx          0x20000c04        0x0
+ .v4_bx         0x20000c04        0x0 linker stubs
+
+.iplt           0x20000c04        0x0
+ .iplt          0x20000c04        0x0 main.o
+
+.rel.dyn        0x20000c04        0x0
+ .rel.iplt      0x20000c04        0x0 main.o
+
+.data           0x20000c04        0x0
+                0x20000c04                . = ALIGN (0x4)
+ *(.data)
+ .data          0x20000c04        0x0 main.o
+ .data          0x20000c04        0x0 system.o
+ .data          0x20000c04        0x0 cos_tb.o
+ *(.data*)
 
 .igot.plt       0x20000c04        0x0
  .igot.plt      0x20000c04        0x0 main.o
@@ -66,6 +71,7 @@ Linker script and memory map
                 0x20000e00                table_interrupt_vector_RAM
                 0x20000f88                system_time
  .bss           0x20000f8c        0x0 cos_tb.o
+ *(.bss*)
                 0x00000400                _stack_size = 0x400
                 0x20020000                _stack_end = (ORIGIN (RAM) + LENGTH (RAM))
                 0x2001fc00                _stack_begin = (_stack_end - _stack_size)
@@ -79,15 +85,15 @@ LOAD system.o
 LOAD cos_tb.o
 OUTPUT(blink.elf elf32-littlearm)
 
-.debug_info     0x00000000      0xe6e
+.debug_info     0x00000000      0xe78
  .debug_info    0x00000000       0xc1 main.o
  .debug_info    0x000000c1      0xd15 system.o
- .debug_info    0x00000dd6       0x98 cos_tb.o
+ .debug_info    0x00000dd6       0xa2 cos_tb.o
 
-.debug_abbrev   0x00000000      0x308
+.debug_abbrev   0x00000000      0x30f
  .debug_abbrev  0x00000000       0x87 main.o
  .debug_abbrev  0x00000087      0x22b system.o
- .debug_abbrev  0x000002b2       0x56 cos_tb.o
+ .debug_abbrev  0x000002b2       0x5d cos_tb.o
 
 .debug_aranges  0x00000000       0x58
  .debug_aranges

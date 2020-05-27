@@ -1,0 +1,234 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAM              0x20000000         0x00020000         xrw
+FLASH            0x08000000         0x00100000         xr
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+
+.text           0x20000000     0x1327
+                0x20000000                . = ALIGN (0x4)
+ *(.startup_sec)
+ .startup_sec   0x20000000       0x34 startup.o
+                0x20000000                startup
+ *(.text)
+ .text          0x20000034       0x5c main.o
+                0x20000034                main
+ .text          0x20000090      0x2e8 system.o
+                0x20000128                SysTick_Handler_RAM
+                0x20000144                set_ram_vt
+                0x200001b0                sleep
+                0x200001e0                port_config
+                0x20000270                clock_config
+ .text          0x20000378      0x76c xprintf.o
+                0x20000378                xputc
+                0x200003c8                xputs
+                0x200003f0                xfputs
+                0x20000728                xprintf
+                0x2000074c                xsprintf
+                0x2000078c                xfprintf
+                0x200007c8                put_dump
+                0x200008bc                xgets
+                0x2000095c                xfgets
+                0x20000994                xatoi
+ .text          0x20000ae4        0x0 startup.o
+ .text          0x20000ae4      0x2d8 uart.o
+                0x20000b14                USART2_Handler_RAM
+                0x20000bac                uart_config
+                0x20000bec                uart_putch
+                0x20000c34                uart_send
+                0x20000cb0                uart_send_str
+                0x20000d44                uart_read
+ .text          0x20000dbc      0x1c8 can.o
+                0x20000dbc                can_config
+                0x20000e68                can_send_pack
+                0x20000ef4                can_read_pack
+ .text          0x20000f84      0x384 mku.o
+                0x20000f84                mku_send_pack
+                0x20000fa8                mku_send_status
+                0x20000ff0                mku_send_AB1
+                0x20001080                mku_send_AB2
+                0x200010e0                mku_send_AB3
+                0x2000113c                mku_send_AB4
+                0x20001198                mku_send_AB5
+                0x2000127c                mku_rec_pack
+ *(.text*)
+ *(.rodata)
+ .rodata        0x20001308       0x1f xprintf.o
+ *(.rodata*)
+
+.glue_7         0x20001328        0x0
+ .glue_7        0x20001328        0x0 linker stubs
+
+.glue_7t        0x20001328        0x0
+ .glue_7t       0x20001328        0x0 linker stubs
+
+.vfp11_veneer   0x20001328        0x0
+ .vfp11_veneer  0x20001328        0x0 linker stubs
+
+.v4_bx          0x20001328        0x0
+ .v4_bx         0x20001328        0x0 linker stubs
+
+.iplt           0x20001328        0x0
+ .iplt          0x20001328        0x0 main.o
+
+.rel.dyn        0x20001328        0x0
+ .rel.iplt      0x20001328        0x0 main.o
+
+.data           0x20001327        0x1
+                0x20001328                . = ALIGN (0x4)
+ *fill*         0x20001327        0x1 
+ *(.data)
+ .data          0x20001328        0x0 main.o
+ .data          0x20001328        0x0 system.o
+ .data          0x20001328        0x0 xprintf.o
+ .data          0x20001328        0x0 startup.o
+ .data          0x20001328        0x0 uart.o
+ .data          0x20001328        0x0 can.o
+ .data          0x20001328        0x0 mku.o
+ *(.data*)
+
+.igot.plt       0x20001328        0x0
+ .igot.plt      0x20001328        0x0 main.o
+
+.bss            0x20001400      0x9b8
+                0x20001400                . = ALIGN (0x4)
+                0x20001400                _bss_begin = .
+ *(.bss)
+ .bss           0x20001400        0x0 main.o
+ .bss           0x20001400      0x18c system.o
+                0x20001400                table_interrupt_vector_RAM
+                0x20001588                system_time
+ .bss           0x2000158c        0xc xprintf.o
+                0x2000158c                xfunc_out
+                0x20001594                xfunc_in
+ .bss           0x20001598        0x0 startup.o
+ .bss           0x20001598      0x810 uart.o
+                0x20001598                tx_buf
+                0x20001998                tx_idx
+                0x2000199c                tx_wr_idx
+                0x200019a0                rx_buf
+                0x20001da0                rx_idx
+                0x20001da4                rx_rd_idx
+ .bss           0x20001da8        0x0 can.o
+ .bss           0x20001da8       0x10 mku.o
+                0x20001da8                rec_pack
+ *(.bss*)
+                0x20001db8                _bss_end = .
+                0x00000400                _stack_size = 0x400
+                0x20020000                _stack_end = (ORIGIN (RAM) + LENGTH (RAM))
+                0x2001fc00                _stack_begin = (_stack_end - _stack_size)
+                0x2001fc00                . = _stack_begin
+
+._stack         0x20001db8      0x400
+                0x200021b8                . = (. + _stack_size)
+ *fill*         0x20001db8      0x400 
+LOAD main.o
+LOAD system.o
+LOAD xprintf.o
+LOAD startup.o
+LOAD uart.o
+LOAD can.o
+LOAD mku.o
+OUTPUT(blink.elf elf32-littlearm)
+
+.debug_info     0x00000000     0x2640
+ .debug_info    0x00000000      0x1b5 main.o
+ .debug_info    0x000001b5      0xa81 system.o
+ .debug_info    0x00000c36      0x4c9 xprintf.o
+ .debug_info    0x000010ff       0x78 startup.o
+ .debug_info    0x00001177      0x886 uart.o
+ .debug_info    0x000019fd      0x5f8 can.o
+ .debug_info    0x00001ff5      0x64b mku.o
+
+.debug_abbrev   0x00000000      0x974
+ .debug_abbrev  0x00000000       0xd1 main.o
+ .debug_abbrev  0x000000d1      0x21a system.o
+ .debug_abbrev  0x000002eb      0x194 xprintf.o
+ .debug_abbrev  0x0000047f       0x6f startup.o
+ .debug_abbrev  0x000004ee      0x1b3 uart.o
+ .debug_abbrev  0x000006a1      0x14f can.o
+ .debug_abbrev  0x000007f0      0x184 mku.o
+
+.debug_aranges  0x00000000       0xe0
+ .debug_aranges
+                0x00000000       0x20 main.o
+ .debug_aranges
+                0x00000020       0x20 system.o
+ .debug_aranges
+                0x00000040       0x20 xprintf.o
+ .debug_aranges
+                0x00000060       0x20 startup.o
+ .debug_aranges
+                0x00000080       0x20 uart.o
+ .debug_aranges
+                0x000000a0       0x20 can.o
+ .debug_aranges
+                0x000000c0       0x20 mku.o
+
+.debug_line     0x00000000      0x988
+ .debug_line    0x00000000      0x100 main.o
+ .debug_line    0x00000100      0x191 system.o
+ .debug_line    0x00000291      0x2e5 xprintf.o
+ .debug_line    0x00000576       0x40 startup.o
+ .debug_line    0x000005b6      0x15e uart.o
+ .debug_line    0x00000714      0x143 can.o
+ .debug_line    0x00000857      0x131 mku.o
+
+.debug_str      0x00000000      0xe52
+ .debug_str     0x00000000      0x174 main.o
+                                0x1b5 (size before relaxing)
+ .debug_str     0x00000174      0x79e system.o
+                                0x94c (size before relaxing)
+ .debug_str     0x00000912       0xa9 xprintf.o
+                                0x1ba (size before relaxing)
+ .debug_str     0x000009bb       0x39 startup.o
+                                 0xfd (size before relaxing)
+ .debug_str     0x000009f4       0xa5 uart.o
+                                0x876 (size before relaxing)
+ .debug_str     0x00000a99       0xe7 can.o
+                                0x37b (size before relaxing)
+ .debug_str     0x00000b80      0x2d2 mku.o
+                                0x45d (size before relaxing)
+
+.comment        0x00000000       0x6e
+ .comment       0x00000000       0x6e main.o
+                                 0x6f (size before relaxing)
+ .comment       0x0000006e       0x6f system.o
+ .comment       0x0000006e       0x6f xprintf.o
+ .comment       0x0000006e       0x6f startup.o
+ .comment       0x0000006e       0x6f uart.o
+ .comment       0x0000006e       0x6f can.o
+ .comment       0x0000006e       0x6f mku.o
+
+.ARM.attributes
+                0x00000000       0x33
+ .ARM.attributes
+                0x00000000       0x33 main.o
+ .ARM.attributes
+                0x00000033       0x33 system.o
+ .ARM.attributes
+                0x00000066       0x33 xprintf.o
+ .ARM.attributes
+                0x00000099       0x33 startup.o
+ .ARM.attributes
+                0x000000cc       0x33 uart.o
+ .ARM.attributes
+                0x000000ff       0x33 can.o
+ .ARM.attributes
+                0x00000132       0x33 mku.o
+
+.debug_frame    0x00000000      0x614
+ .debug_frame   0x00000000       0x30 main.o
+ .debug_frame   0x00000030      0x108 system.o
+ .debug_frame   0x00000138      0x1e4 xprintf.o
+ .debug_frame   0x0000031c       0x34 startup.o
+ .debug_frame   0x00000350      0x114 uart.o
+ .debug_frame   0x00000464       0x80 can.o
+ .debug_frame   0x000004e4      0x130 mku.o
+
+.debug_ranges   0x00000000       0x10
+ .debug_ranges  0x00000000       0x10 startup.o

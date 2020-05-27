@@ -1,0 +1,39 @@
+
+CMSIS provides for Cortex-M3 / Cortex-M4 processor based microcontrollers 
+debug support via the Instrumented Trace Macrocell (ITM).
+
+The Cortex-M3 incorporates the Instrumented Trace Macrocell (ITM) that
+provides together with the Serial Viewer Output trace capabilities for 
+the microcontroller system. The ITM has 32 communication channels which 
+are able to transmit 32 / 16 / 8 bit values; two ITM communication 
+channels are used by CMSIS to output the following information:
+
+	ITM Channel 0: used for printf-style output via the debug interface.
+	ITM Channel 31: is reserved for RTOS kernel awareness debugging.
+
+ITM_SendChar(ch) is used to transmit a character over ITM channel 0 from 
+the microcontroller system to the debug system.
+Only a 8 bit value is transmitted.
+
+Generally a GDB client does not support SWO. But luckily, 
+the J-Link GDB server is able to work around this and send SWO data to a socket. 
+
+If not set differently, J-Link GDB Server will use default settings:
+
+Telnet port: 2331
+SWO data port: 2332
+
+Step-by-step guide:
+---------------------------------------------
+1 Open a command line GDB client
+2 Connect to the J-Link GDB Server. This can be achieved via these commands:
+	
+	target remote :2331
+	monitor SWO EnableTarget 160000000 75000 1 0
+	c
+Syntax
+SWO EnableTarget <CPUFreq[Hz]> <SWOFreq[Hz]> <PortMask[0x01-0xFFFFFFFF] <Mode[0]>
+	
+3 Then start telnet with these options:
+
+	telnet 127.0.0.1 2332
