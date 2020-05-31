@@ -23,6 +23,8 @@ int main()
 {	
 	int i = 0;
 	char buf[16];
+	
+	//__sync_fetch_and_add(&i, 1);
 
 	clock_config();
 	port_config();

@@ -175,7 +175,7 @@ int mku_rec_pack()
 				break;
 			}
 		}
-
+/*
 		if(rec_pack.id.f.to == MKU4_ADDR) {
 			dbg_prn("MKU4\n");
 		}
@@ -188,7 +188,7 @@ int mku_rec_pack()
 		else if(rec_pack.id.f.to == MKU1_ADDR) {
 			dbg_prn("MKU1\n");
 		}
-		
+*/		
 		return 1;
 	}
 	
